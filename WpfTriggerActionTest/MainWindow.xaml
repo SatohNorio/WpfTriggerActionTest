@@ -1,0 +1,54 @@
+﻿<Window x:Class="WpfTriggerActionTest.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:local="clr-namespace:WpfTriggerActionTest"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        Title="MainWindow"
+        Width="1024"
+        Height="640"
+        DataContext="{DynamicResource ResourceKey=FMainWindowViewModel}"
+        mc:Ignorable="d">
+    <Window.Resources>
+        <local:MainWindowViewModel x:Key="FMainWindowViewModel" />
+    </Window.Resources>
+    <DockPanel>
+        <DockPanel DockPanel.Dock="Bottom" LastChildFill="True">
+            <ResizeGrip x:Name="resizeGrip"
+                        DockPanel.Dock="Right"
+                        WindowChrome.ResizeGripDirection="BottomRight" />
+            <ComboBox x:Name="comboBox"
+                      Margin="0"
+                      HorizontalAlignment="Stretch"
+                      IsEditable="True"
+                      ItemsSource="{Binding CommandLogItems}"
+                      Text="{Binding CommandText}">
+                <i:Interaction.Behaviors>
+                    <local:EnterKeyUpBehavior Command="{Binding StringExecuteCommand}" />
+                </i:Interaction.Behaviors>
+            </ComboBox>
+        </DockPanel>
+        <Border BorderBrush="Black"
+                BorderThickness="0"
+                DockPanel.Dock="Top">
+            <ScrollViewer x:Name="scrollViewer">
+                <ListBox x:Name="listBox" ItemsSource="{Binding LogItems}">
+                    <i:Interaction.Triggers>
+                        <ei:PropertyChangedTrigger Binding="{Binding Items.Count, ElementName=listBox}">
+                            <ei:CallMethodAction MethodName="ScrollToBottom" TargetObject="{Binding ElementName=scrollViewer}" />
+                        </ei:PropertyChangedTrigger>
+                    </i:Interaction.Triggers>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock FontFamily="Meiryo UI"
+                                       FontSize="12"
+                                       Text="{Binding}" />
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </ScrollViewer>
+        </Border>
+    </DockPanel>
+</Window>
